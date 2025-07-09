@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vtu_topup/features/home/screens/history.dart';
 import 'package:vtu_topup/features/more/moreScreen.dart';
+import 'package:vtu_topup/features/more/notifications.dart';
 import 'package:vtu_topup/features/paybills/paybills_screent.dart';
 import 'package:vtu_topup/features/profile/profile.dart';
 import 'package:vtu_topup/features/task/taskScreen.dart';
@@ -55,19 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.nightlight_outlined),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Theme toggle coming soon!')),
-              );
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.notifications_active_outlined),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No new notifications')),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
             },
           ),
           const SizedBox(width: 8),

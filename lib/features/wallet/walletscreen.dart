@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vtu_topup/apps/core/constant/app_color.dart';
 import 'package:vtu_topup/features/wallet/fundwallet.dart';
-import 'package:vtu_topup/features/wallet/withraw.dart';
 
 class Transaction {
   final String title;
@@ -52,7 +52,8 @@ class WalletScreen extends StatelessWidget {
         title: Text(
           "My Wallet",
           style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
             color: Theme.of(context).colorScheme.onBackground,
           ),
         ),
@@ -60,28 +61,41 @@ class WalletScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => Fundwallet()),
+          );
+        },
+        backgroundColor: AppColor.primary,
+        child: const Icon(Icons.add, color: Colors.white),
+        tooltip: 'Fund Wallet',
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _WalletCard(balance: "₦1,500"),
-              const SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Recent Transactions",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+              const SizedBox(height: 24),
+              Text(
+                "Recent Transactions",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Expanded(
                 child: transactions.isEmpty
-                    ? const Center(child: Text("No transactions yet"))
-                    : ListView.builder(
+                    ? _EmptyState()
+                    : ListView.separated(
                         itemCount: transactions.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           return _TransactionTile(transaction: transactions[index]);
                         },
@@ -106,70 +120,65 @@ class _WalletCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            colorScheme.primary,
-            colorScheme.primary.withOpacity(0.8),
-          ],
+          colors: [AppColor.primary, AppColor.primary.withOpacity(0.7)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: colorScheme.shadow.withOpacity(0.2),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
         ],
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Wallet Balance",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.white70)),
-          const SizedBox(height: 8),
+          Text(
+            "Wallet Balance",
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.white70,
+            ),
+          ),
+          const SizedBox(height: 12),
           Text(
             balance,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            style: GoogleFonts.poppins(
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => Fundwallet()));
-                },
-                icon: const Icon(Icons.add),
-                label: const Text("Fund Wallet"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => Fundwallet()),
+              );
+            },
+            icon: const Icon(Icons.add, size: 20),
+            label: const Text(
+              "Fund Wallet",
+              style: TextStyle(fontSize: 16),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: AppColor.textDark,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              const SizedBox(width: 12),
-              OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => WithdrawScreen()));
-                },
-                icon: const Icon(Icons.arrow_downward),
-                label: const Text("Withdraw"),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.white),
-                ),
-              ),
-            ],
+              elevation: 2,
+            ),
           ),
         ],
       ),
@@ -185,42 +194,86 @@ class _TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final Color cardColor =
-        isDark ? Colors.grey[850]! : Colors.grey[100]!;
+    final Color cardColor = isDark ? Colors.grey[850]! : Colors.grey[100]!;
 
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       color: cardColor,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: CircleAvatar(
-          backgroundColor: transaction.isDebit
-              ? Colors.red[100]
-              : Colors.green[100],
+          backgroundColor: transaction.isDebit ? Colors.red[100] : Colors.green[100],
           child: Icon(
             transaction.isDebit ? Icons.arrow_upward : Icons.arrow_downward,
             color: transaction.isDebit ? Colors.red : Colors.green,
+            size: 24,
           ),
         ),
         title: Text(
           transaction.title,
-          style: Theme.of(context).textTheme.bodyLarge,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
         ),
         subtitle: Text(
           transaction.date,
-          style: Theme.of(context).textTheme.bodySmall,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+          ),
         ),
         trailing: Text(
           transaction.amount,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: transaction.isDebit ? Colors.red : Colors.green,
-                fontWeight: FontWeight.w600,
-              ),
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: transaction.isDebit ? Colors.red : Colors.green,
+          ),
         ),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Tapped on ${transaction.title}")),
+          );
+        },
       ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.history_toggle_off,
+          size: 64,
+          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          "No transactions yet",
+          style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          "Fund your wallet to get started!",
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }
