@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:vtu_topup/apps/core/constant/app_color.dart';
 import 'package:vtu_topup/features/home/screens/history.dart';
+// ignore: unused_import
 import 'package:vtu_topup/features/wallet/walletscreen.dart';
 
 class Fundwallet extends StatelessWidget {
@@ -120,11 +121,12 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   final _cvvController = TextEditingController();
   String? _paymentMethod = 'Card';
 
-  final _currencyFormatter = NumberFormat.currency(
-    locale: 'en_NG',
-    symbol: '₦',
-    decimalDigits: 0,
-  );
+  // ignore: unused_field
+  // final _currencyFormatter = NumberFormat.currency(
+  //   locale: 'en_NG',
+  //   symbol: '₦',
+  //   decimalDigits: 0,
+  // );
 
   @override
   void dispose() {

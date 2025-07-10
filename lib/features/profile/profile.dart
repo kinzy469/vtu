@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:vtu_topup/features/profile/editprofile.dart';
 // ignore: unused_import
 import 'package:vtu_topup/features/wallet/walletscreen.dart';
 
@@ -158,9 +159,9 @@ class ProfileScreen extends StatelessWidget {
                         title: const Text('Edit Profile'),
                         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Edit Profile tapped')),
-                          );
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const EditProfileScreen(),
+                          ));
                         },
                       ),
                       const Divider(height: 1),

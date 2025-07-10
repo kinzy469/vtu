@@ -38,14 +38,16 @@ class _HomeScreenState extends State<HomeScreen> {
           leading: CircleAvatar(
             backgroundColor: Colors.pink[100],
             radius: 22,
+            child: TextButton(onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen())), 
             child: Text(
               'D',
-              style: TextStyle(
-                color: color.onPrimary,
+              style: GoogleFonts.poppins(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                color: Colors.pink[800],
               ),
-            ),
+            )),
+             
           ),
           title: Text(
             'Hello Daniel',
