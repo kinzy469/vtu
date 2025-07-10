@@ -7,7 +7,9 @@ import 'package:vtu_topup/features/paybills/paybills_screent.dart';
 import 'package:vtu_topup/features/profile/profile.dart';
 import 'package:vtu_topup/features/task/taskScreen.dart';
 import 'package:vtu_topup/features/topup/screens/airtime.dart';
+import 'package:vtu_topup/features/topup/screens/cableScreen.dart';
 import 'package:vtu_topup/features/topup/screens/data_topup_screen.dart';
+import 'package:vtu_topup/features/topup/screens/electricity.dart';
 import 'package:vtu_topup/features/wallet/walletscreen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -175,8 +177,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 _quickAction(context, Icons.phone_android, 'Airtime', const AirtimeTopupScreen(), Colors.blue),
                 _quickAction(context, Icons.wifi, 'Data', const DataTopupScreen(), Colors.green),
-                _quickAction(context, Icons.tv, 'Cable', const PayBillsScreen(), Colors.red),
-                _quickAction(context, Icons.lightbulb, 'Electricity', const PayBillsScreen(), Colors.orange),
+                _quickAction(context, Icons.tv, 'Cable', const CableTVRechargeScreen(), Colors.red),
+                _quickAction(context, Icons.lightbulb, 'Electricity', const ElectricityTokenScreen(), Colors.orange),
               ],
             ),
             const SizedBox(height: 30),
