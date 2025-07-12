@@ -57,7 +57,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundColor: colorScheme.surfaceVariant,
+                  backgroundColor: colorScheme.surfaceContainerHighest,
                   child: Icon(Icons.person, size: 40, color: colorScheme.onSurface),
                 ),
                 const SizedBox(height: 24),

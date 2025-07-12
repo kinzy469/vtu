@@ -45,7 +45,7 @@ class WalletScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -54,7 +54,7 @@ class WalletScreen extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 20,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         backgroundColor: Colors.transparent,
@@ -69,8 +69,8 @@ class WalletScreen extends StatelessWidget {
           );
         },
         backgroundColor: AppColor.primary,
-        child: const Icon(Icons.add, color: Colors.white),
         tooltip: 'Fund Wallet',
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: SafeArea(
         child: Padding(
@@ -85,7 +85,7 @@ class WalletScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -216,14 +216,14 @@ class _TransactionTile extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         subtitle: Text(
           transaction.date,
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
           ),
         ),
         trailing: Text(
@@ -253,7 +253,7 @@ class _EmptyState extends StatelessWidget {
         Icon(
           Icons.history_toggle_off,
           size: 64,
-          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
         ),
         const SizedBox(height: 16),
         Text(
@@ -261,7 +261,7 @@ class _EmptyState extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 8),
@@ -269,7 +269,7 @@ class _EmptyState extends StatelessWidget {
           "Fund your wallet to get started!",
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
           ),
           textAlign: TextAlign.center,
         ),

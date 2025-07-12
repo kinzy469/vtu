@@ -76,7 +76,15 @@ flutter:
     - assets/airtime_logo/glo_logo.jpeg
     - assets/airtime_logo/airtel_logo.jpeg
     - assets/airtime_logo/9mobile_logo.jpeg
-    - assets/images/tvlogo/gotv.jpeg
+    - assets/provider_logo/netflix.jpeg
+    - assets/provider_logo/dstv.jpeg
+    - assets/provider_logo/gotv.jpeg
+    - assets/provider_logo/startime.jpeg
+    - assets/provider_logo/prime.jpeg
+    - assets/provider_logo/showmax.jpeg
+    - assets/images/vtu_topup.png
+    - assets/provider_logo/
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

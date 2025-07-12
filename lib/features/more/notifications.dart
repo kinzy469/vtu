@@ -50,7 +50,7 @@ class NotificationScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -59,7 +59,7 @@ class NotificationScreen extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 20,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         actions: [
@@ -95,7 +95,7 @@ class NotificationScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onBackground,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -151,14 +151,14 @@ class _NotificationTile extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: notification.isRead ? FontWeight.w500 : FontWeight.w600,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         subtitle: Text(
           notification.message,
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
           ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -170,7 +170,7 @@ class _NotificationTile extends StatelessWidget {
               notification.date,
               style: GoogleFonts.poppins(
                 fontSize: 12,
-                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
               ),
             ),
             const SizedBox(height: 4),
@@ -203,7 +203,7 @@ class _EmptyNotificationState extends StatelessWidget {
         Icon(
           Icons.notifications_off,
           size: 64,
-          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
         ),
         const SizedBox(height: 16),
         Text(
@@ -211,7 +211,7 @@ class _EmptyNotificationState extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 18,
             fontWeight: FontWeight.w500,
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
           ),
         ),
         const SizedBox(height: 8),
@@ -219,7 +219,7 @@ class _EmptyNotificationState extends StatelessWidget {
           "You'll see updates here when you take actions!",
           style: GoogleFonts.poppins(
             fontSize: 14,
-            color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
           ),
           textAlign: TextAlign.center,
         ),

@@ -154,7 +154,7 @@ class TaskScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isCompleted
                     ? Colors.green.withOpacity(0.15)
-                    : theme.colorScheme.surfaceVariant,
+                    : theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Text(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vtu_topup/apps/core/constant/app_color.dart';
+import 'package:google_fonts/google_fonts.dart'; // Added for consistent typography
 
 class ElectricityTokenScreen extends StatefulWidget {
   const ElectricityTokenScreen({super.key});
@@ -16,7 +17,7 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
   bool _isLoading = false;
 
   List<double> get predefinedAmounts {
-    return [1000, 2000, 5000, 10000, 20000]; // Common amounts for electricity tokens
+    return [1000, 2000, 5000, 10000, 20000];
   }
 
   @override
@@ -35,7 +36,7 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
   void _handlePurchase() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 1)); // Simulate network call
+      await Future.delayed(const Duration(seconds: 1));
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -63,6 +64,8 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = Theme.of(context).cardColor;
     final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -71,9 +74,13 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
+        title: Text(
           "Electricity Token Purchase",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontSize: screenWidth * 0.05, // Responsive font size
+          ),
         ),
         backgroundColor: AppColor.secondary,
         elevation: 0,
@@ -89,76 +96,77 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Provider Selection Section
               Text(
                 "Select Provider",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                      fontSize: 22,
-                    ),
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                  fontSize: screenWidth * 0.05,
+                ),
               ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
+              SizedBox(height: screenHeight * 0.015),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 3, // 3 boxes per row for better balance
+                crossAxisSpacing: screenWidth * 0.03,
+                mainAxisSpacing: screenHeight * 0.015,
+                childAspectRatio: 0.8, // Taller boxes for better proportion
                 children: [
                   NetworkCard(
                     name: "Ikeja Electric",
                     color: Colors.blue[700]!,
-                    imageAsset: 'assets/provider_logo/ikeja_electric_logo.png',
                     isSelected: selectedProvider == "Ikeja Electric",
                     onTap: () => setState(() => selectedProvider = "Ikeja Electric"),
                   ),
                   NetworkCard(
                     name: "Eko Electric",
                     color: Colors.red[700]!,
-                    imageAsset: 'assets/provider_logo/eko_electric_logo.png',
                     isSelected: selectedProvider == "Eko Electric",
                     onTap: () => setState(() => selectedProvider = "Eko Electric"),
                   ),
                   NetworkCard(
                     name: "PHCN",
                     color: Colors.green[700]!,
-                    imageAsset: 'assets/provider_logo/phcn_logo.png',
                     isSelected: selectedProvider == "PHCN",
                     onTap: () => setState(() => selectedProvider = "PHCN"),
                   ),
                   NetworkCard(
                     name: "Kaduna Electric",
                     color: Colors.orange[700]!,
-                    imageAsset: 'assets/provider_logo/kaduna_electric_logo.png',
                     isSelected: selectedProvider == "Kaduna Electric",
                     onTap: () => setState(() => selectedProvider = "Kaduna Electric"),
                   ),
                   NetworkCard(
                     name: "Abuja Electric",
                     color: Colors.purple[700]!,
-                    imageAsset: 'assets/provider_logo/abuja_electric_logo.png',
                     isSelected: selectedProvider == "Abuja Electric",
                     onTap: () => setState(() => selectedProvider = "Abuja Electric"),
                   ),
+                  NetworkCard(
+                    name: "BEDC - Benin",
+                    color: Colors.teal[700]!,
+                    isSelected: selectedProvider == "BEDC - Benin",
+                    onTap: () => setState(() => selectedProvider = "BEDC - Benin"),
+                  ),
                 ],
               ),
-
-              const SizedBox(height: 24),
-
-              // Input Fields Section
+              SizedBox(height: screenHeight * 0.03),
               Text(
                 "Enter Details",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                      fontSize: 22,
-                    ),
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                  fontSize: screenWidth * 0.05,
+                ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: screenHeight * 0.015),
               Card(
                 elevation: 4,
                 color: cardColor,
@@ -166,7 +174,7 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(screenWidth * 0.05),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -186,7 +194,7 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: screenHeight * 0.02),
                       CustomInputField(
                         label: "Amount (₦)",
                         hint: "Enter Purchase Amount",
@@ -207,17 +215,14 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: screenHeight * 0.02),
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
-                        transitionBuilder: (child, animation) => FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        ),
+                        transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
                         child: Wrap(
                           key: ValueKey(selectedProvider),
-                          spacing: 8,
-                          runSpacing: 8,
+                          spacing: screenWidth * 0.02,
+                          runSpacing: screenHeight * 0.01,
                           children: predefinedAmounts.map((amount) {
                             final isSelected = _amountController.text == amount.toStringAsFixed(0);
                             return ChoiceChip(
@@ -226,10 +231,10 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
                               onSelected: (selected) => _setAmount(amount),
                               selectedColor: AppColor.secondary.withOpacity(0.2),
                               backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
-                              labelStyle: TextStyle(
+                              labelStyle: GoogleFonts.poppins(
                                 color: isSelected ? AppColor.secondary : textColor,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 14,
+                                fontSize: screenWidth * 0.035,
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -237,7 +242,7 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
                                   color: isSelected ? AppColor.secondary : Colors.grey[400]!,
                                 ),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: 8),
                             );
                           }).toList(),
                         ),
@@ -246,8 +251,7 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
                   ),
                 ),
               ),
-
-              const SizedBox(height: 24),
+              SizedBox(height: screenHeight * 0.03),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -272,26 +276,27 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                     child: Center(
                       child: _isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                               width: 24,
                               height: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
+                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                             )
-                          : const Text(
+                          : Text(
                               "Purchase Token",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                              style: GoogleFonts.poppins(
+                                fontSize: screenWidth * 0.04,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: screenHeight * 0.02),
             ],
           ),
         ),
@@ -300,20 +305,16 @@ class _ElectricityTokenScreenState extends State<ElectricityTokenScreen> {
   }
 }
 
-// NetworkCard with animation
+// Updated NetworkCard with responsive sizing
 class NetworkCard extends StatelessWidget {
   final String name;
   final Color color;
-  final String? imageAsset;
-  final String? imageEmoji;
   final bool isSelected;
   final VoidCallback onTap;
 
   const NetworkCard({
     required this.name,
     required this.color,
-    this.imageAsset,
-    this.imageEmoji,
     required this.isSelected,
     required this.onTap,
     super.key,
@@ -323,6 +324,7 @@ class NetworkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
     final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       onTap: onTap,
@@ -330,7 +332,8 @@ class NetworkCard extends StatelessWidget {
         scale: isSelected ? 1.05 : 1.0,
         duration: const Duration(milliseconds: 200),
         child: SizedBox(
-          width: MediaQuery.of(context).size.width / 3.5 - 16,
+          width: screenWidth * 0.3 - 16, // Responsive width (30% of screen width minus padding)
+          height: screenWidth * 0.35, // Slightly taller for better proportion
           child: Material(
             color: cardColor,
             borderRadius: BorderRadius.circular(12),
@@ -341,34 +344,26 @@ class NetworkCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: isSelected ? Border.all(color: AppColor.secondary, width: 2) : null,
               ),
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(screenWidth * 0.03), // Responsive padding
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
                     backgroundColor: color.withOpacity(0.9),
-                    radius: 22,
-                    child: imageAsset != null
-                        ? ClipOval(
-                            child: Image.asset(
-                              imageAsset!,
-                              height: 32,
-                              width: 32,
-                              fit: BoxFit.contain,
-                            ),
-                          )
-                        : Text(
-                            imageEmoji ?? '',
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                    radius: screenWidth * 0.06, // Responsive radius
+                    child: Icon(
+                      Icons.lightbulb,
+                      color: Colors.white,
+                      size: screenWidth * 0.07, // Responsive icon size
+                    ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: screenWidth * 0.02),
                   Text(
                     name,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
-                      fontSize: 13,
+                      fontSize: screenWidth * 0.035, // Responsive font size
                       color: isSelected ? AppColor.secondary : textColor,
                     ),
                   ),
@@ -382,7 +377,7 @@ class NetworkCard extends StatelessWidget {
   }
 }
 
-// CustomInputField with hint text
+// Reusable input field
 class CustomInputField extends StatelessWidget {
   final String label;
   final String hint;
@@ -406,6 +401,7 @@ class CustomInputField extends StatelessWidget {
     final fillColor = Theme.of(context).inputDecorationTheme.fillColor ??
         (Theme.of(context).brightness == Brightness.dark ? Colors.grey[900] : Colors.white);
     final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return TextFormField(
       controller: controller,
@@ -415,12 +411,18 @@ class CustomInputField extends StatelessWidget {
         labelText: label,
         hintText: hint,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
-        labelStyle: TextStyle(color: textColor.withOpacity(0.7), fontSize: 16),
-        hintStyle: TextStyle(color: textColor.withOpacity(0.5), fontSize: 14),
-        prefixIcon: Icon(icon, color: AppColor.secondary, size: 20),
+        labelStyle: GoogleFonts.poppins(
+          color: textColor.withOpacity(0.7),
+          fontSize: screenWidth * 0.04,
+        ),
+        hintStyle: GoogleFonts.poppins(
+          color: textColor.withOpacity(0.5),
+          fontSize: screenWidth * 0.035,
+        ),
+        prefixIcon: Icon(icon, color: AppColor.secondary, size: screenWidth * 0.05),
         filled: true,
         fillColor: fillColor,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        contentPadding: EdgeInsets.symmetric(vertical: screenWidth * 0.04, horizontal: screenWidth * 0.04),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -438,9 +440,12 @@ class CustomInputField extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.red[400]!, width: 2),
         ),
-        errorStyle: const TextStyle(fontSize: 12),
+        errorStyle: GoogleFonts.poppins(fontSize: screenWidth * 0.03),
       ),
-      style: TextStyle(color: textColor, fontSize: 16),
+      style: GoogleFonts.poppins(
+        color: textColor,
+        fontSize: screenWidth * 0.04,
+      ),
     );
   }
 }

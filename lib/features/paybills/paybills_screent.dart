@@ -8,7 +8,9 @@ import 'package:vtu_topup/features/more/moreScreen.dart';
 import 'package:vtu_topup/features/profile/profile.dart';
 import 'package:vtu_topup/features/task/taskScreen.dart';
 import 'package:vtu_topup/features/topup/screens/airtime.dart';
+import 'package:vtu_topup/features/topup/screens/cableScreen.dart';
 import 'package:vtu_topup/features/topup/screens/data_topup_screen.dart';
+import 'package:vtu_topup/features/topup/screens/electricity.dart';
 
 class PayBillsScreen extends StatefulWidget {
   const PayBillsScreen({super.key});
@@ -83,13 +85,13 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
                 _PayOption(
                   icon: FontAwesomeIcons.bolt,
                   label: 'Electricity',
-                  destination: const HomeScreen(),
+                  destination: const ElectricityTokenScreen(),
                   color: Colors.yellow[700]!,
                 ),
                 _PayOption(
                   icon: FontAwesomeIcons.tv,
                   label: 'Cable TV',
-                  destination: const HomeScreen(),
+                  destination: const CableTVRechargeScreen(),
                   color: Colors.red[700]!,
                 ),
                 _PayOption(
