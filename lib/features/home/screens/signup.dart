@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:vtu_topup/apps/core/constant/app_color.dart';
 import 'package:vtu_topup/features/home/screens/home_screen.dart';
 import 'package:vtu_topup/features/home/screens/login.dart';
+import 'package:vtu_topup/services/api_service.dart';
 
 class Signup extends StatelessWidget {
   const Signup({super.key});
@@ -89,11 +90,23 @@ class Signup extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => HomeScreen()),
+                        onPressed: () async {
+                          final result = await ApiService.signup(
+                            name: 'Ahmed', // get from controller
+                            email: 'ddddd@gmail.com', // get from controller
+                            password: 'your_password', // get from controller
                           );
+
+                          if (result['status'] == true) {
+                            // Success
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => HomeScreen()),
+                            );
+                          } else {
+                            // Error
+                            print(result['message']);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColor.secondary,

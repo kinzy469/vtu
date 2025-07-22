@@ -36,10 +36,7 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
         ),
         title: Text(
           "Pay Bills",
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 0,
@@ -48,7 +45,10 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColor.secondary, AppColor.secondary.withOpacity(0.85)],
+              colors: [
+                AppColor.secondary,
+                AppColor.secondary.withOpacity(0.85),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -86,7 +86,7 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
                   icon: FontAwesomeIcons.bolt,
                   label: 'Electricity',
                   destination: const ElectricityTokenScreen(),
-                  color: Colors.yellow[700]!,
+                  color: const Color.fromARGB(255, 245, 182, 25),
                 ),
                 _PayOption(
                   icon: FontAwesomeIcons.tv,
@@ -114,13 +114,17 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
               children: [
                 Text(
                   'Recent Bill Payments',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ViewMoreScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const ViewMoreScreen(),
+                      ),
                     );
                   },
                   child: Text(
@@ -135,7 +139,9 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
             const SizedBox(height: 12),
             Card(
               elevation: 3,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -154,7 +160,10 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.green.withOpacity(0.2),
                                 borderRadius: BorderRadius.circular(8),
@@ -219,9 +228,21 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _navButton(context, Icons.home, 'Home', const HomeScreen(), 0),
-            _navButton(context, Icons.cached_rounded, 'Pay Bills', const PayBillsScreen(), 1),
+            _navButton(
+              context,
+              Icons.cached_rounded,
+              'Pay Bills',
+              const PayBillsScreen(),
+              1,
+            ),
             _navButton(context, Icons.task_alt, 'Task', const TaskScreen(), 2),
-            _navButton(context, Icons.person_4_outlined, 'Profile', const ProfileScreen(), 3),
+            _navButton(
+              context,
+              Icons.person_4_outlined,
+              'Profile',
+              const ProfileScreen(),
+              3,
+            ),
           ],
         ),
       ),
@@ -244,7 +265,10 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
           _selectedNavIndex = index;
         });
         if (destination.runtimeType != PayBillsScreen) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => destination));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => destination),
+          );
         }
       },
       child: AnimatedContainer(
@@ -259,7 +283,10 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? theme.colorScheme.primary : theme.iconTheme.color,
+              color:
+                  isSelected
+                      ? theme.colorScheme.primary
+                      : theme.iconTheme.color,
               size: 24,
             ),
             const SizedBox(height: 4),
@@ -267,7 +294,10 @@ class _PayBillsScreenState extends State<PayBillsScreen> {
               label,
               style: GoogleFonts.poppins(
                 fontSize: 12,
-                color: isSelected ? theme.colorScheme.primary : theme.textTheme.bodySmall?.color,
+                color:
+                    isSelected
+                        ? theme.colorScheme.primary
+                        : theme.textTheme.bodySmall?.color,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
@@ -297,10 +327,7 @@ class _PayOption extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => destination),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (_) => destination));
       },
       child: Card(
         elevation: 4,

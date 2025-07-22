@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vtu_topup/apps/core/constant/app_color.dart';
 import 'package:vtu_topup/features/home/screens/home_screen.dart';
 import 'package:vtu_topup/features/home/screens/signup.dart';
+import 'package:vtu_topup/services/api_service.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -76,11 +77,20 @@ class Login extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => HomeScreen()),
+                        onPressed: () async {
+                          final result = await ApiService.login(
+                            email: 'ddddd@gmail.com',
+                            password: 'your_password',
                           );
+
+                          if (result['status'] == true) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => HomeScreen()),
+                            );
+                          } else {
+                            print(result['message']);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColor.secondary,
@@ -138,7 +148,9 @@ class Login extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (_) => const Signup()),
+                                MaterialPageRoute(
+                                  builder: (_) => const Signup(),
+                                ),
                               );
                             },
                             child: Text(

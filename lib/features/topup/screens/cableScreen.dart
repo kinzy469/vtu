@@ -15,7 +15,13 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
   final _formKey = GlobalKey<FormState>();
 
   List<double> get predefinedAmounts {
-    return ["Netflix", "Prime Video", "Showmax", "IrokoTV", "KDNPLUS"].contains(selectedProvider)
+    return [
+          "Netflix",
+          "Prime Video",
+          "Showmax",
+          "IrokoTV",
+          "KDNPLUS",
+        ].contains(selectedProvider)
         ? [1200, 2000, 2900, 5000, 10000] // Adjusted for streaming services
         : [1000, 2000, 5000, 10000, 15000]; // Default for cable TV
   }
@@ -37,7 +43,8 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardColor = Theme.of(context).cardColor;
-    final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final textColor =
+        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -74,9 +81,9 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
               Text(
                 "Select Provider",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -116,7 +123,8 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
                     color: Colors.blue[900]!,
                     imageAsset: 'assets/provider_logo/prime.jpeg',
                     isSelected: selectedProvider == "Prime Video",
-                    onTap: () => setState(() => selectedProvider = "Prime Video"),
+                    onTap:
+                        () => setState(() => selectedProvider = "Prime Video"),
                   ),
                   NetworkCard(
                     name: "Showmax",
@@ -125,7 +133,6 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
                     isSelected: selectedProvider == "Showmax",
                     onTap: () => setState(() => selectedProvider = "Showmax"),
                   ),
-                  
                 ],
               ),
 
@@ -135,9 +142,9 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
               Text(
                 "Enter Details",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
               ),
               const SizedBox(height: 12),
               Card(
@@ -160,8 +167,16 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter a subscriber ID or email';
                           }
-                          if (["Netflix", "Prime Video", "Showmax", "IrokoTV", "KDNPLUS"].contains(selectedProvider)) {
-                            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                          if ([
+                            "Netflix",
+                            "Prime Video",
+                            "Showmax",
+                            "IrokoTV",
+                            "KDNPLUS",
+                          ].contains(selectedProvider)) {
+                            if (!RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            ).hasMatch(value)) {
                               return 'Enter a valid email address';
                             }
                           } else {
@@ -196,26 +211,40 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: predefinedAmounts.map((amount) {
-                          final isSelected = _amountController.text == amount.toStringAsFixed(0);
-                          return ChoiceChip(
-                            label: Text('₦${amount.toStringAsFixed(0)}'),
-                            selected: isSelected,
-                            onSelected: (selected) => _setAmount(amount),
-                            selectedColor: AppColor.secondary.withOpacity(0.2),
-                            backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
-                            labelStyle: TextStyle(
-                              color: isSelected ? AppColor.secondary : textColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide(
-                                color: isSelected ? AppColor.secondary : Colors.grey[400]!,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                        children:
+                            predefinedAmounts.map((amount) {
+                              final isSelected =
+                                  _amountController.text ==
+                                  amount.toStringAsFixed(0);
+                              return ChoiceChip(
+                                label: Text('₦${amount.toStringAsFixed(0)}'),
+                                selected: isSelected,
+                                onSelected: (selected) => _setAmount(amount),
+                                selectedColor: AppColor.secondary.withOpacity(
+                                  0.2,
+                                ),
+                                backgroundColor:
+                                    isDark
+                                        ? Colors.grey[800]
+                                        : Colors.grey[200],
+                                labelStyle: TextStyle(
+                                  color:
+                                      isSelected
+                                          ? AppColor.secondary
+                                          : textColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(
+                                    color:
+                                        isSelected
+                                            ? AppColor.secondary
+                                            : Colors.grey[400]!,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
                       ),
                     ],
                   ),
@@ -234,30 +263,42 @@ class _CableTVRechargeScreenState extends State<CableTVRechargeScreen> {
                     ),
                     elevation: 3,
                   ),
-                  onPressed: selectedProvider == null || _amountController.text.isEmpty
-                      ? null
-                      : () {
-                          if (_formKey.currentState!.validate()) {
-                            final action = ["Netflix", "Prime Video", "Showmax", "IrokoTV", "KDNPLUS"].contains(selectedProvider)
-                                ? "Subscribing to"
-                                : "Recharging";
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  '$action ₦${_amountController.text} for $selectedProvider',
+                  onPressed:
+                      selectedProvider == null || _amountController.text.isEmpty
+                          ? null
+                          : () {
+                            if (_formKey.currentState!.validate()) {
+                              final action =
+                                  [
+                                        "Netflix",
+                                        "Prime Video",
+                                        "Showmax",
+                                        "IrokoTV",
+                                        "KDNPLUS",
+                                      ].contains(selectedProvider)
+                                      ? "Subscribing to"
+                                      : "Recharging";
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '$action ₦${_amountController.text} for $selectedProvider',
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: AppColor.secondary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: AppColor.secondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            );
-                          }
-                        },
+                              );
+                            }
+                          },
                   child: const Text(
                     "Recharge Now",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -291,7 +332,8 @@ class NetworkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
-    final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final textColor =
+        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
 
     return SizedBox(
       width: MediaQuery.of(context).size.width / 3 - 24, // Responsive width
@@ -305,7 +347,10 @@ class NetworkCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: isSelected ? Border.all(color: AppColor.secondary, width: 2) : null,
+              border:
+                  isSelected
+                      ? Border.all(color: AppColor.secondary, width: 2)
+                      : null,
             ),
             padding: const EdgeInsets.all(8),
             child: Column(
@@ -314,19 +359,20 @@ class NetworkCard extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: color.withOpacity(0.9),
                   radius: 24,
-                  child: imageAsset != null
-                      ? ClipOval(
-                          child: Image.asset(
-                            imageAsset!,
-                            height: 36,
-                            width: 36,
-                            fit: BoxFit.contain,
+                  child:
+                      imageAsset != null
+                          ? ClipOval(
+                            child: Image.asset(
+                              imageAsset!,
+                              height: 36,
+                              width: 36,
+                              fit: BoxFit.contain,
+                            ),
+                          )
+                          : Text(
+                            imageEmoji ?? '',
+                            style: const TextStyle(fontSize: 20),
                           ),
-                        )
-                      : Text(
-                          imageEmoji ?? '',
-                          style: const TextStyle(fontSize: 20),
-                        ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -366,8 +412,11 @@ class CustomInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fillColor = Theme.of(context).inputDecorationTheme.fillColor ??
-        (Theme.of(context).brightness == Brightness.dark ? Colors.grey[900] : Colors.white);
+    final fillColor =
+        Theme.of(context).inputDecorationTheme.fillColor ??
+        (Theme.of(context).brightness == Brightness.dark
+            ? Colors.grey[900]
+            : Colors.white);
 
     return TextFormField(
       controller: controller,

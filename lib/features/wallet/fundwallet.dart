@@ -38,10 +38,10 @@ class Fundwallet extends StatelessWidget {
                 Text(
                   "Enter Amount",
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: textColor,
-                      ),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: textColor,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -83,8 +83,9 @@ class Fundwallet extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                PaymentMethodScreen(amount: amount),
+                            builder:
+                                (context) =>
+                                    PaymentMethodScreen(amount: amount),
                           ),
                         );
                       }
@@ -138,40 +139,42 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
   void _showConfirmationDialog(BuildContext context, String method) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Payment'),
-        content: Text(
-          'Fund wallet with ${widget.amount} using $method?',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Confirm Payment'),
+            content: Text(
+              'Fund wallet with ${widget.amount} using $method?',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Successfully funded ${widget.amount} via $method',
+                      ),
+                    ),
+                  );
+                  Navigator.popUntil(context, ModalRoute.withName('/wallet'));
+                },
+                child: const Text('Confirm'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Successfully funded ${widget.amount} via $method',
-                  ),
-                ),
-              );
-              Navigator.popUntil(context, ModalRoute.withName('/wallet'));
-            },
-            child: const Text('Confirm'),
-          ),
-        ],
-      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? AppColor.backgroundDark : AppColor.background;
+    final backgroundColor =
+        isDark ? AppColor.backgroundDark : AppColor.background;
     final cardColor = isDark ? AppColor.cardDark : AppColor.cardLight;
     final textColor = isDark ? AppColor.textLight : AppColor.textDark;
 
@@ -193,13 +196,13 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             'Choose Payment Method',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
           ),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: Colors.transparent,
+
           foregroundColor: textColor,
         ),
         body: SafeArea(
@@ -212,19 +215,19 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   Text(
                     'Amount: ${widget.amount}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: textColor,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: textColor,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   Text(
                     'Select Payment Method',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: textColor,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: textColor,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
@@ -236,29 +239,35 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    items: ['Card', 'Bank Transfer']
-                        .map((method) => DropdownMenuItem(
-                              value: method,
-                              child: Text(method),
-                            ))
-                        .toList(),
+                    items:
+                        ['Card', 'Bank Transfer']
+                            .map(
+                              (method) => DropdownMenuItem(
+                                value: method,
+                                child: Text(method),
+                              ),
+                            )
+                            .toList(),
                     onChanged: (value) {
                       setState(() {
                         _paymentMethod = value;
                       });
                     },
-                    validator: (value) =>
-                        value == null ? 'Please select a payment method' : null,
+                    validator:
+                        (value) =>
+                            value == null
+                                ? 'Please select a payment method'
+                                : null,
                   ),
                   const SizedBox(height: 24),
                   if (_paymentMethod == 'Card') ...[
                     Text(
                       'Card Details',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: textColor,
-                          ),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: textColor,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -302,8 +311,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter expiry date';
                               }
-                              if (!RegExp(r'^(0[1-9]|1[0-2])\/\d{2}$')
-                                  .hasMatch(value)) {
+                              if (!RegExp(
+                                r'^(0[1-9]|1[0-2])\/\d{2}$',
+                              ).hasMatch(value)) {
                                 return 'Enter valid MM/YY';
                               }
                               return null;
@@ -340,10 +350,10 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     Text(
                       'Bank Transfer Details',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: textColor,
-                          ),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: textColor,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Card(
@@ -359,21 +369,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                           children: [
                             Text(
                               'Please transfer ${widget.amount} to:',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
+                              style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: textColor),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'Bank: Zenith Bank\nAccount Number: 1234567890\nAccount Name: VTU Topup',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: textColor,
-                                  ),
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: textColor,
+                              ),
                             ),
                           ],
                         ),
