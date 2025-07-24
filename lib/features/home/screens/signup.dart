@@ -6,8 +6,53 @@ import 'package:vtu_topup/features/home/screens/home_screen.dart';
 import 'package:vtu_topup/features/home/screens/login.dart';
 import 'package:vtu_topup/services/api_service.dart';
 
-class Signup extends StatelessWidget {
+class Signup extends StatefulWidget {
   const Signup({super.key});
+
+  @override
+  State<Signup> createState() => _SignupState();
+}
+
+class _SignupState extends State<Signup> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  void handleSignup() async {
+    setState(() => isLoading = true);
+
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    final result = await ApiService.signUp(name, email, password);
+
+    setState(() => isLoading = false);
+
+    if (result['status'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Registration successful")),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomeScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'] ?? 'Signup failed')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +62,7 @@ class Signup extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Blue Container with Curved Bottom Corners
+              // Top Container
               Container(
                 height: 200,
                 width: double.infinity,
@@ -41,7 +86,6 @@ class Signup extends StatelessWidget {
                 ),
               ),
 
-              // Form Content
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
@@ -49,8 +93,9 @@ class Signup extends StatelessWidget {
                   children: [
                     const SizedBox(height: 40),
 
-                    // First Name
+                    // Name
                     TextField(
+                      controller: nameController,
                       decoration: InputDecoration(
                         labelText: 'First Name',
                         hintText: 'Ex: Ahmed',
@@ -63,9 +108,10 @@ class Signup extends StatelessWidget {
 
                     // Email
                     TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        hintText: 'dddd@gmail.com',
+                        hintText: 'example@gmail.com',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -75,10 +121,11 @@ class Signup extends StatelessWidget {
 
                     // Password
                     TextField(
+                      controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        suffixIcon: Icon(Icons.visibility_off),
+                        suffixIcon: const Icon(Icons.visibility_off),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -86,28 +133,11 @@ class Signup extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // Create Account Button
+                    // Submit
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () async {
-                          final result = await ApiService.signup(
-                            name: 'Ahmed', // get from controller
-                            email: 'ddddd@gmail.com', // get from controller
-                            password: 'your_password', // get from controller
-                          );
-
-                          if (result['status'] == true) {
-                            // Success
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => HomeScreen()),
-                            );
-                          } else {
-                            // Error
-                            print(result['message']);
-                          }
-                        },
+                        onPressed: isLoading ? null : handleSignup,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColor.secondary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -115,13 +145,17 @@ class Signup extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: const Text(
-                          'Create Account',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+                        child: isLoading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                            : const Text(
+                                'Create Account',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -177,7 +211,7 @@ class Signup extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
 
-                    // Bottom Text
+                    // Bottom Link
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -187,7 +221,7 @@ class Signup extends StatelessWidget {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (_) => Login()),
+                                MaterialPageRoute(builder: (_) => const Login()),
                               );
                             },
                             child: const Text(
