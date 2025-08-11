@@ -4,6 +4,7 @@ import 'package:vtu_topup/apps/core/constant/app_color.dart';
 import 'package:vtu_topup/features/home/screens/history.dart';
 // ignore: unused_import
 import 'package:vtu_topup/features/wallet/walletscreen.dart';
+import 'package:vtu_topup/services/api_service.dart';
 
 class Fundwallet extends StatelessWidget {
   Fundwallet({super.key});
@@ -148,21 +149,31 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Successfully funded ${widget.amount} via $method',
-                      ),
-                    ),
+
+                  final result = await ApiService.fundWallet(
+                    int.parse(widget.amount),
+                    paymentMethod: _paymentMethod!,
+                    cardNumber: _cardNumberController.text,
+                    expiryDate: _expiryController.text,
+                    cvv: _cvvController.text,
                   );
-                  Navigator.popUntil(context, ModalRoute.withName('/wallet'));
+
+                  if (result) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Successfully funded ₦${widget.amount}'),
+                      ),
+                    );
+                    Navigator.popUntil(context, ModalRoute.withName('/wallet'));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to fund wallet')),
+                    );
+                  }
                 },
+
                 child: const Text('Confirm'),
               ),
             ],
@@ -186,7 +197,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColor.primary,
-            foregroundColor: Colors.white,
+            foregroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -202,8 +213,8 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
           ),
           centerTitle: true,
           elevation: 0,
-
-          foregroundColor: textColor,
+          backgroundColor: AppColor.primary,
+        foregroundColor: textColor.withOpacity(0.8),
         ),
         body: SafeArea(
           child: Padding(
@@ -240,11 +251,11 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                       ),
                     ),
                     items:
-                        ['Card', 'Bank Transfer']
+                        ['Card', 'Bank Transfer',] 
                             .map(
                               (method) => DropdownMenuItem(
                                 value: method,
-                                child: Text(method),
+                                child: Text(method, style: TextStyle(color: textColor)),
                               ),
                             )
                             .toList(),

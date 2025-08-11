@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vtu_topup/features/profile/editprofile.dart';
-// ignore: unused_import
-import 'package:vtu_topup/features/wallet/walletscreen.dart';
+import 'package:vtu_topup/services/api_service.dart';
 
 class AppConstants {
   static const double padding = 20;
   static const double cardRadius = 16;
 }
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
-  static const _userData = {
-    'name': 'John Doe',
-    'email': 'john.doe@example.com',
-    'balance': 1500.0,
-  };
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
 
+class _ProfileScreenState extends State<ProfileScreen> {
+  String _name = 'User';
+  String _email = '';
+  double _balance = 0.0;
+  bool _isLoading = true;
+  String _errorMessage = '';
   static final _lastLogin = DateTime(2025, 7, 7, 15, 20);
 
   static final _currencyFormatter = NumberFormat.currency(
@@ -30,9 +34,50 @@ class ProfileScreen extends StatelessWidget {
   static final _dateTimeFormatter = DateFormat('MMM d, yyyy hh:mm a');
 
   @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    _fetchAndStoreUser();
+  }
+
+  Future<void> _fetchAndStoreUser() async {
+    setState(() => _isLoading = true);
+    final result = await ApiService.getUser();
+    setState(() {
+      _isLoading = false;
+      if (result['status'] == true) {
+        _loadUserData();
+      } else {
+        _errorMessage = result['message'] ?? 'Failed to fetch user data';
+      }
+    });
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? 'User';
+      _email = prefs.getString('email') ?? '';
+      _balance = double.tryParse(prefs.getString('balance') ?? '0') ?? 0.0;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    if (_isLoading) {
+      return Scaffold(
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_errorMessage.isNotEmpty) {
+      return Scaffold(
+        body: Center(child: Text(_errorMessage)),
+      );
+    }
 
     return Theme(
       data: theme.copyWith(
@@ -60,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         body: SafeArea(
           child: RefreshIndicator(
-            onRefresh: () async => await Future.delayed(const Duration(seconds: 1)),
+            onRefresh: _fetchAndStoreUser,
             child: ListView(
               padding: const EdgeInsets.all(AppConstants.padding),
               children: [
@@ -80,14 +125,14 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          _userData['name'] as String,
+                          _name,
                           style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          _userData['email'] as String,
+                          _email,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurface.withOpacity(0.6),
                           ),
@@ -107,7 +152,7 @@ class ProfileScreen extends StatelessWidget {
                                 Icon(Icons.account_balance_wallet, color: theme.iconTheme.color),
                                 const SizedBox(width: 8),
                                 Text(
-                                  'Wallet Balance: ${_currencyFormatter.format(_userData['balance'])}',
+                                  'Wallet Balance: ${_currencyFormatter.format(_balance)}',
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -159,9 +204,12 @@ class ProfileScreen extends StatelessWidget {
                         title: const Text('Edit Profile'),
                         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const EditProfileScreen(),
-                          ));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const EditProfileScreen(),
+                            ),
+                          );
                         },
                       ),
                       const Divider(height: 1),
@@ -169,11 +217,21 @@ class ProfileScreen extends StatelessWidget {
                         leading: const Icon(Icons.logout, color: Colors.red),
                         title: const Text('Logout'),
                         trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.red),
-                        onTap: () {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Logged out')),
-                          );
+                        onTap: () async {
+                          final result = await ApiService.logout(
+                              (await SharedPreferences.getInstance()).getString('token') ?? '');
+                          if (result['status'] == true) {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.clear();
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Logged out successfully')),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['message'] ?? 'Logout failed')),
+                            );
+                          }
                         },
                       ),
                     ],

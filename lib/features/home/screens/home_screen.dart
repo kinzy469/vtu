@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vtu_topup/features/home/screens/history.dart';
 import 'package:vtu_topup/features/more/moreScreen.dart';
 import 'package:vtu_topup/features/more/notifications.dart';
@@ -11,6 +12,7 @@ import 'package:vtu_topup/features/topup/screens/cableScreen.dart';
 import 'package:vtu_topup/features/topup/screens/data_topup_screen.dart';
 import 'package:vtu_topup/features/topup/screens/electricity.dart';
 import 'package:vtu_topup/features/wallet/walletscreen.dart';
+import 'package:vtu_topup/services/api_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,14 +23,66 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedNavIndex = 0;
+  String _username = "User";
+  String _balance = "₦0";
+  bool _isLoading = true;
+  String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    fetchAndStoreUser();
+  }
+
+  Future<void> fetchAndStoreUser() async {
+    setState(() => _isLoading = true);
+    final result = await ApiService.getUser();
+    setState(() {
+      _isLoading = false;
+      if (result['status'] == true) {
+        _loadUserData();
+      } else {
+        _errorMessage = result['message'] ?? 'Failed to fetch user data';
+      }
+    });
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _username = prefs.getString('name') ?? 'User';
+      _balance = prefs.getString('balance') ?? '₦0';
+    });
+  }
+
+  Future<void> _debugSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('SharedPreferences:');
+    print('Token: ${prefs.getString('token')}');
+    print('Name: ${prefs.getString('name')}');
+    print('Email: ${prefs.getString('email')}');
+    print('Balance: ${prefs.getString('balance')}');
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = theme.colorScheme;
-    // Get screen size for responsive design
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_errorMessage.isNotEmpty) {
+      return Scaffold(
+        body: Center(child: Text(_errorMessage)),
+      );
+    }
 
     return Scaffold(
       backgroundColor: color.surface,
@@ -40,13 +94,16 @@ class _HomeScreenState extends State<HomeScreen> {
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
             backgroundColor: Colors.pink[100],
-            radius: 20, // Slightly reduced for better proportion
+            radius: 20,
             child: TextButton(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen())),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              ),
               child: Text(
-                'D',
+                _username.isNotEmpty ? _username[0].toUpperCase() : 'U',
                 style: GoogleFonts.poppins(
-                  fontSize: 18, // Reduced font size for better fit
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.pink[800],
                 ),
@@ -54,9 +111,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           title: Text(
-            'Hello Daniel',
+            'Hello ${_username.isNotEmpty ? _username : 'User'}',
             style: GoogleFonts.poppins(
-              fontSize: 18, // Slightly smaller for balance
+              fontSize: 18,
               fontWeight: FontWeight.w600,
               color: color.onSurface,
             ),
@@ -64,23 +121,30 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_active_outlined, size: 24), // Consistent icon size
+            icon: const Icon(Icons.notifications_active_outlined, size: 24),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotificationScreen()),
+              );
             },
           ),
           const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.02), // Responsive padding
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth * 0.05,
+          vertical: screenHeight * 0.02,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Balance Card
             Card(
               elevation: 6,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)), // Slightly smaller radius
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
               child: Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
@@ -90,8 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                height: screenHeight * 0.22, // Responsive height (22% of screen height)
-                padding: EdgeInsets.all(screenWidth * 0.04), // Responsive padding
+                height: screenHeight * 0.22,
+                padding: EdgeInsets.all(screenWidth * 0.04),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,13 +167,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Current Balance',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: screenWidth * 0.04, // Responsive font size
+                            fontSize: screenWidth * 0.04,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const HistoryScreen(),
+                              ),
+                            );
                           },
                           child: Text(
                             'View History',
@@ -122,22 +191,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     Text(
-                      '₦1,000',
+                      _balance,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: screenWidth * 0.07, // Responsive balance font size
+                        fontSize: screenWidth * 0.07,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
-                        height: screenHeight * 0.06, // Responsive button height
-                        width: screenWidth * 0.35, // Responsive button width
+                        height: screenHeight * 0.06,
+                        width: screenWidth * 0.35,
                         padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(colors: [Colors.yellowAccent, Colors.orange]),
-                          borderRadius: BorderRadius.circular(16), // Consistent radius
+                          gradient: const LinearGradient(
+                            colors: [Colors.yellowAccent, Colors.orange],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                         child: Container(
                           decoration: BoxDecoration(
@@ -147,7 +218,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Center(
                             child: TextButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const WalletScreen()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const WalletScreen(),
+                                  ),
+                                );
                               },
                               child: Text(
                                 '+ Add Fund',
@@ -166,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.03), // Responsive spacing
+            SizedBox(height: screenHeight * 0.03),
             Text(
               'Quick Actions',
               style: GoogleFonts.poppins(
@@ -180,14 +256,38 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisCount: 4,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: screenWidth * 0.02, // Responsive spacing
+              crossAxisSpacing: screenWidth * 0.02,
               mainAxisSpacing: screenHeight * 0.015,
-              childAspectRatio: 0.85, // Adjusted for better proportion
+              childAspectRatio: 0.85,
               children: [
-                _quickAction(context, Icons.phone_android, 'Airtime', const AirtimeTopupScreen(), Colors.blue),
-                _quickAction(context, Icons.wifi, 'Data', const DataTopupScreen(), Colors.green),
-                _quickAction(context, Icons.tv, 'Cable', const CableTVRechargeScreen(), Colors.red),
-                _quickAction(context, Icons.lightbulb, 'Electricity', const ElectricityTokenScreen(), Colors.orange),
+                _quickAction(
+                  context,
+                  Icons.phone_android,
+                  'Airtime',
+                  const AirtimeTopupScreen(),
+                  Colors.blue,
+                ),
+                _quickAction(
+                  context,
+                  Icons.wifi,
+                  'Data',
+                  const DataTopupScreen(),
+                  Colors.green,
+                ),
+                _quickAction(
+                  context,
+                  Icons.tv,
+                  'Cable',
+                  const CableTVRechargeScreen(),
+                  Colors.red,
+                ),
+                _quickAction(
+                  context,
+                  Icons.lightbulb,
+                  'Electricity',
+                  const ElectricityTokenScreen(),
+                  Colors.orange,
+                ),
               ],
             ),
             SizedBox(height: screenHeight * 0.03),
@@ -204,7 +304,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ViewMoreScreen()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ViewMoreScreen()),
+                    );
                   },
                   child: Text(
                     'View more',
@@ -220,7 +323,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Card(
               color: theme.cardColor,
               elevation: 3,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               child: Padding(
                 padding: EdgeInsets.all(screenWidth * 0.04),
                 child: Row(
@@ -241,7 +346,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.02, vertical: 4),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.02,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.green[100],
                                 borderRadius: BorderRadius.circular(8),
@@ -296,7 +404,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: screenHeight * 0.015, horizontal: screenWidth * 0.04), // Responsive padding
+        padding: EdgeInsets.symmetric(
+          vertical: screenHeight * 0.015,
+          horizontal: screenWidth * 0.04,
+        ),
         decoration: BoxDecoration(
           color: color.surface,
           boxShadow: [
@@ -311,25 +422,46 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _navButton(context, Icons.home, 'Home', const HomeScreen(), 0),
-            _navButton(context, Icons.cached_rounded, 'Pay Bills', const PayBillsScreen(), 1),
+            _navButton(
+              context,
+              Icons.cached_rounded,
+              'Pay Bills',
+              const PayBillsScreen(),
+              1,
+            ),
             _navButton(context, Icons.task_alt, 'Task', const TaskScreen(), 2),
-            _navButton(context, Icons.person_4_outlined, 'Profile', const ProfileScreen(), 3),
+            _navButton(
+              context,
+              Icons.person_4_outlined,
+              'Profile',
+              const ProfileScreen(),
+              3,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _quickAction(BuildContext context, IconData icon, String label, Widget screen, Color iconColor) {
+  Widget _quickAction(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Widget screen,
+    Color iconColor,
+  ) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => screen)),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => screen),
+          ),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(screenWidth * 0.03), // Responsive padding
+            padding: EdgeInsets.all(screenWidth * 0.03),
             decoration: BoxDecoration(
               color: iconColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
@@ -341,7 +473,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            child: Icon(icon, color: iconColor, size: screenWidth * 0.08), // Responsive icon size
+            child: Icon(icon, color: iconColor, size: screenWidth * 0.08),
           ),
         ),
         SizedBox(height: screenWidth * 0.02),
@@ -357,7 +489,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _navButton(BuildContext context, IconData icon, String label, Widget screen, int index) {
+  Widget _navButton(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Widget screen,
+    int index,
+  ) {
     final isSelected = _selectedNavIndex == index;
     final color = Theme.of(context).colorScheme;
     final screenWidth = MediaQuery.of(context).size.width;
@@ -371,15 +509,24 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: screenWidth * 0.02), // Responsive padding
+        padding: EdgeInsets.symmetric(
+          vertical: 4,
+          horizontal: screenWidth * 0.02,
+        ),
         decoration: BoxDecoration(
-          color: isSelected ? color.primaryContainer.withOpacity(0.2) : Colors.transparent,
+          color: isSelected
+              ? color.primaryContainer.withOpacity(0.2)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: isSelected ? color.primary : color.onSurface, size: screenWidth * 0.06), // Responsive icon size
+            Icon(
+              icon,
+              color: isSelected ? color.primary : color.onSurface,
+              size: screenWidth * 0.06,
+            ),
             SizedBox(height: screenWidth * 0.01),
             Text(
               label,

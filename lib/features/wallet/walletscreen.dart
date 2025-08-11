@@ -78,7 +78,7 @@ class WalletScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _WalletCard(balance: "₦1,500"),
+              _WalletCard(balance: "₦0.00"),
               const SizedBox(height: 24),
               Text(
                 "Recent Transactions",
