@@ -137,20 +137,20 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
     super.dispose();
   }
 
-  void _showConfirmationDialog(BuildContext context, String method) {
+  void _showConfirmationDialog(BuildContext bcontext, String method) {
     showDialog(
-      context: context,
+      context: bcontext,
       builder:
-          (context) => AlertDialog(
+          (bcontext) => AlertDialog(
             title: const Text('Confirm Payment'),
             content: Text(
               'Fund wallet with ${widget.amount} using $method?',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(bcontext).textTheme.bodyMedium,
             ),
             actions: [
               TextButton(
                 onPressed: () async {
-                  Navigator.pop(context);
+                  Navigator.pop(bcontext);
 
                   final result = await ApiService.fundWallet(
                     int.parse(widget.amount),
@@ -163,7 +163,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                   if (result) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Successfully funded ₦${widget.amount}'),
+                        content: Text('Successfully funded'),
                       ),
                     );
                     Navigator.popUntil(context, ModalRoute.withName('/wallet'));

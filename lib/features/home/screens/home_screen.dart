@@ -131,8 +131,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(width: 8),
         ],
-      ),
-      body: SingleChildScrollView(
+      ), 
+      drawer: const NavigationDrawer(),
+      
+      
+      body:SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: screenWidth * 0.05,
           vertical: screenHeight * 0.02,
@@ -537,6 +540,24 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}    
+
+
+class NavigationDrawer extends StatelessWidget {
+  const NavigationDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      drawer: SingleChildScrollView( 
+        child: Column(
+       
+          
         ),
       ),
     );

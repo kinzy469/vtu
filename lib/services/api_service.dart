@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://10.159.224.137:8000/api';
+  static const String baseUrl = 'http://10.142.54.214:8000/api';
 
   static Future<bool> register(
     String name,
@@ -71,43 +71,42 @@ class ApiService {
     }
   }
 
-static Future<Map<String, dynamic>> login(
-  String email,
-  String password,
-) async {
-  try {
-    final response = await http.post(
-      Uri.parse("$baseUrl/login"),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: {'email': email, 'password': password},
-    );
-
-    print('Login API Response: ${response.statusCode} - ${response.body}');
-
-    final data = json.decode(response.body);
-    if (response.statusCode == 200) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', data['token']);
-      await prefs.setString('name', data['user']['name'] ?? 'User');
-      await prefs.setString('email', data['user']['email'] ?? '');
-      await prefs.setString(
-        'balance',
-        data['user']['balance']?.toString() ?? '₦0',
+  static Future<Map<String, dynamic>> login(
+    String email,
+    String password,
+  ) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/login"),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {'email': email, 'password': password},
       );
 
-      // ✅ Save user ID
-      await prefs.setInt('user_id', data['user']['id']);
-    }
-    return data;
-  } catch (e) {
-    print('Error in login: $e');
-    return {'error': 'Request failed: $e'};
-  }
-}
+      print('Login API Response: ${response.statusCode} - ${response.body}');
 
+      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', data['token']);
+        await prefs.setString('name', data['user']['name'] ?? 'User');
+        await prefs.setString('email', data['user']['email'] ?? '');
+        await prefs.setString(
+          'balance',
+          data['user']['balance']?.toString() ?? '₦0',
+        );
+
+        // ✅ Save user ID
+        await prefs.setInt('user_id', data['user']['id']);
+      }
+      return data;
+    } catch (e) {
+      print('Error in login: $e');
+      return {'error': 'Request failed: $e'};
+    }
+  }
 
   static Future<Map<String, dynamic>> logout(String token) async {
     try {
@@ -166,47 +165,58 @@ static Future<Map<String, dynamic>> login(
     }
   }
 
-
-
-
- static Future<bool> fundWallet(
+  /// Fund wallet API call
+  static Future<bool> fundWallet(
     int amount, {
     required String paymentMethod,
-    required String cardNumber,
-    required String expiryDate,
-    required String cvv,
+    String? cardNumber,
+    String? expiryDate,
+    String? cvv,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token') ?? '';
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+
+      if (token == null) {
+        print('No token found');
+        return false;
+      } else {
+        print(token);
+      }
+
+      final url = Uri.parse('$baseUrl/fund-wallet');
+      final body = {
+        'amount': amount.toString(),
+        'payment_method': paymentMethod,
+        'card_number': cardNumber ?? '',
+        'expiry_date': expiryDate ?? '',
+        'cvv': cvv ?? '',
+      };
+
+      final headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
 
       final response = await http.post(
-        Uri.parse('$baseUrl/api/fund-wallet'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'amount': amount,
-          'payment_method': paymentMethod,
-          'card_number': cardNumber,
-          'expiry_date': expiryDate,
-          'cvv': cvv,
-        }),
+        url,
+        headers: headers,
+        body: jsonEncode(body),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return true;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data['message']);
+        print(data['success']);
+        return data;
       } else {
-        final errorData = jsonDecode(response.body);
-        print('Failed with status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        throw Exception(errorData['message'] ?? 'Unknown error'); // For better error propagation
+        print("Funding failed: ${response.body}");
+        return false;
       }
     } catch (e) {
-      print('Error: $e');
+      print("Error funding wallet: $e");
       return false;
     }
   }
-
 }
